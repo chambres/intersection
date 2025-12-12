@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intersection Simulation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            overflow: hidden;
+        }
+        canvas {
+            display: block;
+        }
+        #ui {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: white;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 15px 20px;
+            border-radius: 10px;
+            font-size: 14px;
+        }
+        #timer {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        #phase {
+            font-size: 16px;
+            color: #aaa;
+        }
+        #fps {
+            margin-top: 10px;
+            font-size: 12px;
+            color: #888;
+        }
+        .car-phase { color: #4ade80 !important; }
+        .pedestrian-phase { color: #f97316 !important; }
+    </style>
+</head>
+<body>
+    <div id="ui">
+        <div id="timer">0:00</div>
+        <div id="phase">Cars Phase</div>
+        <div id="fps">-- FPS | -- ms</div>
+    </div>
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+            "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+        }
+    }
+    </script>
+    <script type="module" src="app.js"></script>
+</body>
+</html>

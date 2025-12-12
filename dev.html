@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Traffic Light Sync Tool</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #1a1a2e;
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        h1 {
+            margin-bottom: 10px;
+            color: #4ade80;
+        }
+        .instructions {
+            max-width: 500px;
+            text-align: center;
+            margin-bottom: 30px;
+            color: #aaa;
+            line-height: 1.6;
+        }
+        #captureBtn {
+            background: #4ade80;
+            color: #1a1a2e;
+            border: none;
+            padding: 30px 60px;
+            font-size: 24px;
+            font-weight: bold;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: transform 0.1s, background 0.2s;
+            margin-bottom: 30px;
+        }
+        #captureBtn:hover {
+            background: #22c55e;
+            transform: scale(1.05);
+        }
+        #captureBtn:active {
+            transform: scale(0.98);
+            background: #16a34a;
+        }
+        #result {
+            background: #16213e;
+            padding: 20px 30px;
+            border-radius: 10px;
+            min-width: 400px;
+            text-align: center;
+        }
+        #timestamp {
+            font-size: 32px;
+            font-family: 'Courier New', monospace;
+            color: #fbbf24;
+            margin: 15px 0;
+            user-select: all;
+        }
+        #humanTime {
+            color: #888;
+            font-size: 14px;
+        }
+        #copyBtn {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 14px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+        #copyBtn:hover {
+            background: #2563eb;
+        }
+        #copyStatus {
+            color: #4ade80;
+            font-size: 12px;
+            margin-top: 10px;
+            height: 18px;
+        }
+        .history {
+            margin-top: 30px;
+            width: 100%;
+            max-width: 500px;
+        }
+        .history h3 {
+            color: #888;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        .history-item {
+            background: #16213e;
+            padding: 10px 15px;
+            border-radius: 5px;
+            margin-bottom: 5px;
+            display: flex;
+            justify-content: space-between;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+        }
+        .history-item .time {
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+    <h1>Traffic Light Sync Tool</h1>
+    <p class="instructions">
+        Go to the intersection. When the light turns <strong style="color: #4ade80;">GREEN for cars</strong>,
+        click the button below to capture the timestamp.
+    </p>
+
+    <button id="captureBtn">CAPTURE TIME</button>
+
+    <div id="result">
+        <div>Timestamp (ms):</div>
+        <div id="timestamp">---</div>
+        <div id="humanTime">Click the button to capture</div>
+        <button id="copyBtn">Copy Timestamp</button>
+        <div id="copyStatus"></div>
+    </div>
+
+    <div class="history">
+        <h3>History (most recent first)</h3>
+        <div id="historyList"></div>
+    </div>
+
+    <script>
+        const captureBtn = document.getElementById('captureBtn');
+        const timestampEl = document.getElementById('timestamp');
+        const humanTimeEl = document.getElementById('humanTime');
+        const copyBtn = document.getElementById('copyBtn');
+        const copyStatus = document.getElementById('copyStatus');
+        const historyList = document.getElementById('historyList');
+
+        let currentTimestamp = null;
+        const history = [];
+
+        captureBtn.addEventListener('click', () => {
+            currentTimestamp = Date.now();
+            timestampEl.textContent = currentTimestamp;
+            humanTimeEl.textContent = new Date(currentTimestamp).toLocaleString();
+
+            // Add to history
+            history.unshift({
+                timestamp: currentTimestamp,
+                time: new Date(currentTimestamp).toLocaleTimeString()
+            });
+
+            // Keep only last 10
+            if (history.length > 10) history.pop();
+
+            // Update history display
+            historyList.innerHTML = history.map(h => `
+                <div class="history-item">
+                    <span>${h.timestamp}</span>
+                    <span class="time">${h.time}</span>
+                </div>
+            `).join('');
+
+            copyStatus.textContent = '';
+        });
+
+        copyBtn.addEventListener('click', () => {
+            if (currentTimestamp) {
+                navigator.clipboard.writeText(currentTimestamp.toString()).then(() => {
+                    copyStatus.textContent = 'Copied!';
+                    setTimeout(() => copyStatus.textContent = '', 2000);
+                });
+            }
+        });
+
+        // Also allow spacebar to capture
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space') {
+                e.preventDefault();
+                captureBtn.click();
+            }
+        });
+    </script>
+</body>
+</html>
