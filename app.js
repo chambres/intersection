@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
 
 // Scene setup
 const scene = new THREE.Scene();
@@ -469,7 +470,10 @@ window.addEventListener('resize', () => {
 let modelCenterOffset = new THREE.Vector3();
 
 // Load GLB model and path data
+const dracoLoader = new DRACOLoader();
+dracoLoader.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.6/');
 const loader = new GLTFLoader();
+loader.setDRACOLoader(dracoLoader);
 
 // Load model, path JSON, and waypoints JSON
 Promise.all([
